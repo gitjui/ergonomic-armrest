@@ -27,14 +27,15 @@ def classify_armrest_height(data):
 
    
     # First case : Standing, no chair
-    
+    print( "debug logs resting_elbow_y : ",resting_elbow_y, " , allowed_margin: " , allowed_margin)
     if data.get("isStanding"):
         if "desk_y" not in data:
             return "Insufficient Data"
         desk_y = data["desk_y"]
-        if desk_y > resting_elbow_y + allowed_margin:
+        print("desk_y ", desk_y)
+        if desk_y < resting_elbow_y - allowed_margin:
             return "Too High"
-        elif desk_y < resting_elbow_y - allowed_margin:
+        elif desk_y > resting_elbow_y + allowed_margin:
             return "Too Low"
         else:
             return "Optimal"
@@ -54,10 +55,11 @@ def classify_armrest_height(data):
     
     if data.get("isDesk"):
         desk_y = data["desk_y"]
+        print("desk_y: ", desk_y)
         if armrest_avg_y > resting_elbow_y + allowed_margin or armrest_avg_y > desk_y + allowed_margin:
-            return "Too High"
-        elif armrest_avg_y < resting_elbow_y - allowed_margin:
             return "Too Low"
+        elif armrest_avg_y < resting_elbow_y - allowed_margin:
+            return "Too High"
         else:
             return "Optimal"
 
@@ -66,8 +68,8 @@ def classify_armrest_height(data):
    
     else:
         if armrest_avg_y > resting_elbow_y + allowed_margin:
-            return "Too High"
-        elif armrest_avg_y < resting_elbow_y - allowed_margin:
             return "Too Low"
+        elif armrest_avg_y < resting_elbow_y - allowed_margin:
+            return "Too High"
         else:
             return "Optimal"

@@ -18,12 +18,29 @@ def process_image_flow(pil_image, original_filename):
 
     # Save environment annotated image
     save_intermediate_image(env_annotated, original_filename, "env_annotated")
+    
+    print("env annotation done")
 
-    # Step 2: Detect arm landmarks using mediapipe
     landmarks = detect_arm_landmarks(frame, side='right')
     if not landmarks:
         return env_annotated, {**env_json, "arm_landmarks_detected": False}
+    
+    print("arm detection done")
+    # Annotate arm landmarks
+    print( landmarks)
+    arm_annotated = frame.copy()
+    for name, coords in landmarks.items():
+        x_px = int(coords['x'])
+        y_px = int(coords['y'])
 
+        # Draw the landmark point
+        cv2.circle(arm_annotated, (x_px, y_px), 5, (0, 255, 0), -1)
+        cv2.putText(arm_annotated, name, (x_px + 5, y_px - 5),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 1, cv2.LINE_AA)
+    # Save arm landmark annotated image
+    save_intermediate_image(arm_annotated, original_filename, "arm_landmarks_annotated")
+    
+    print("arm landmark annotation done")
     # Step 3: Detect armrest and annotate over environment annotated image
     armrest_annotated, armrest_box, desk_y = detect_armrest_and_annotate(env_annotated, landmarks, original_filename,
                                                                           isDesk=env_json.get("isDesk", False), 

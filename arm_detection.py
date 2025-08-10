@@ -4,16 +4,59 @@ import numpy as np
 from image_handler import save_intermediate_image
 mp_pose = mp.solutions.pose
 
+def detect_arm_side(results):
+    """Determine if the visible arm is left or right based on average visibility of shoulder, elbow, and wrist."""
+    # Get landmarks for left side
+    left_shoulder = results.pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_SHOULDER]
+    left_elbow = results.pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_ELBOW]
+    left_wrist = results.pose_landmarks.landmark[mp_pose.PoseLandmark.LEFT_WRIST]
+
+    # Get landmarks for right side
+    right_shoulder = results.pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_SHOULDER]
+    right_elbow = results.pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_ELBOW]
+    right_wrist = results.pose_landmarks.landmark[mp_pose.PoseLandmark.RIGHT_WRIST]
+
+    # Extract visibility values
+    left_visibilities = [
+        left_shoulder.visibility,
+        left_elbow.visibility,
+        left_wrist.visibility,
+    ]
+    right_visibilities = [
+        right_shoulder.visibility,
+        right_elbow.visibility,
+        right_wrist.visibility,
+    ]
+
+    # Calculate average visibility for each side
+    left_avg_visibility = sum(left_visibilities) / len(left_visibilities)
+    right_avg_visibility = sum(right_visibilities) / len(right_visibilities)
+
+    # Print all three visibility values for left and right
+    print(f"Left Shoulder Visibility: {left_shoulder.visibility:.3f}")
+    print(f"Left Elbow Visibility:    {left_elbow.visibility:.3f}")
+    print(f"Left Wrist Visibility:    {left_wrist.visibility:.3f}")
+    print(f"Right Shoulder Visibility: {right_shoulder.visibility:.3f}")
+    print(f"Right Elbow Visibility:    {right_elbow.visibility:.3f}")
+    print(f"Right Wrist Visibility:    {right_wrist.visibility:.3f}")
+
+    # Decide side based on higher average visibility
+    if right_avg_visibility > left_avg_visibility:
+        return 'right'
+    else:
+        return 'left'
+
+    
 def detect_arm_landmarks(image, side='right'):
     with mp_pose.Pose(static_image_mode=True) as pose:
         results = pose.process(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
         if not results.pose_landmarks:
             return None
-
         landmarks = results.pose_landmarks.landmark
         h, w, _ = image.shape
-
-        if side == 'right':
+        side = detect_arm_side(results)
+        print( "side detected: ", side)
+        if side == 'right': 
             shoulder = landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER]
             elbow = landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW]
             wrist = landmarks[mp_pose.PoseLandmark.RIGHT_WRIST]
@@ -59,7 +102,7 @@ def detect_armrest_and_annotate(image, landmarks, base_name, isDesk=False, isCha
         edges_canny = cv2.Canny(blurred, 50, 150)
         contours, _ = cv2.findContours(edges_canny.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         save_intermediate_image(edges_canny, base_name, f"candidate_canny_{center_x}_{center_y}")
-        filtered_contours = [cnt for cnt in contours if len(cnt) > 100]
+        filtered_contours = [cnt for cnt in contours if len(cnt) > 30]
         mask = np.zeros_like(edges_canny)
         cv2.drawContours(mask, filtered_contours, -1, 255, thickness=2)
         save_intermediate_image(mask, base_name, f"candidate_mask_{center_x}_{center_y}")

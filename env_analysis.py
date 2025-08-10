@@ -7,7 +7,7 @@ MODEL_PATH = "yolov8n.pt"
 IMG_SIZE = 320
 CONF_THRESHOLD = 0.4
 DRAW_CLASSES = {"person", "chair", "desk"}
-DESK_ALTERNATES = {"laptop", "mouse", "bottle", "desktop", "keyboard", "monitor", "wallet"}
+DESK_ALTERNATES = {"laptop", "mouse", "bottle", "desktop", "keyboard", "monitor" }
 BOX_COLOR = (170, 200, 0)
 HEADER_COLOR_PASS = (255, 40, 0)
 HEADER_COLOR_FAIL = (0, 0, 255)
@@ -32,6 +32,7 @@ def run_precheck(frame):
             filtered_boxes.append((box.xyxy[0], label, box.conf[0]))
 
     pass_conditions = [
+        {"person"},
         {"person", "desk"},
         {"person", "chair"},
         {"person", "desk", "chair"}
@@ -69,13 +70,16 @@ def add_header_info(frame, detected_labels, status, missing):
     return frame, posture
 
 def build_json(detected_labels, posture):
-    return {
+    result = {
         "isChair": "chair" in detected_labels,
         "isDesk": "desk" in detected_labels,
         "isPerson": "person" in detected_labels,
         "isSitting": posture.lower() == "sitting",
         "isStanding": posture.lower() == "standing",
     }
+    if result.get("isStanding"):
+        result["isDesk"] = True
+    return result
 
 def analyze_environment(frame, base_name):
     frame_copy = frame.copy()

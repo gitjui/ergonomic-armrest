@@ -19,13 +19,13 @@ uploaded_file = st.file_uploader(
 if uploaded_file:
     try:
         image = Image.open(uploaded_file).convert("RGB")
-        st.image(image, caption="Uploaded Image", use_column_width=True)
+        st.image(image, caption="Uploaded Image", use_container_width=True)
 
         with st.spinner("Analyzing image..."):
             annotated_img, result_json = process_image_flow(image, uploaded_file.name)
 
         st.header("Armrest Assessment - " + classify_armrest_height(result_json))
-        st.image(annotated_img, use_column_width=True)
+        st.image(annotated_img, use_container_width=True)
         st.header("Detection JSON")
         st.json(result_json)
 
@@ -35,7 +35,6 @@ if uploaded_file:
 
        
         # New part: show intermediate images grouped by suffix
-        st.header("Intermediate Results")
 
         intermediate_dir = "intermediate_images"
         all_files = os.listdir(intermediate_dir)
@@ -69,7 +68,10 @@ if uploaded_file:
 
         # Order to display prefixes
         display_order = ["cropped", "candidate_canny", "candidate_mask", "candidates"]
-        st.markdown(f"Region of interest processing for above and below elbow")
+        if images_by_suffix and len(images_by_suffix) > 0:
+            st.header("Intermediate Results")
+            st.markdown("Region of interest processing for above and below elbow")
+
         # Now display each suffix group in one line with subplots
         for suffix, images_dict in images_by_suffix.items():
             fig, axes = plt.subplots(1, len(display_order), figsize=(15, 4))
