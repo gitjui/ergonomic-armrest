@@ -4,18 +4,13 @@ from PIL import Image
 import os
 from env_analysis import analyze_environment
 from arm_detection import detect_arm_landmarks, detect_armrest_and_annotate
+from image_handler import save_intermediate_image
+from image_handler import  clean_intermediate_dir
 
 
-INTERMEDIATE_DIR = "intermediate_images"
-os.makedirs(INTERMEDIATE_DIR, exist_ok=True)
-
-def save_intermediate_image(image, base_name, suffix):
-    filename = f"{os.path.splitext(base_name)[0]}_{suffix}.png"
-    path = os.path.join(INTERMEDIATE_DIR, filename)
-    cv2.imwrite(path, image)
-    return path
 
 def process_image_flow(pil_image, original_filename):
+    clean_intermediate_dir()
     frame = cv2.cvtColor(np.array(pil_image), cv2.COLOR_RGB2BGR)
 
     # Step 1: Environment detection (person, chair, desk)

@@ -2,9 +2,9 @@ def classify_armrest_height(data):
     """
     Classifies armrest height as 'Optimal', 'Too High', or 'Too Low'.
     Handles:
-    - Standing without chair: compare desk vs elbow
-    - Sitting with desk: compare armrest vs elbow and desk
-    - Sitting without desk: compare armrest vs elbow only
+    Standing without chair: compare desk vs elbow
+    Sitting with desk: compare armrest vs elbow and desk
+    Sitting without desk: compare armrest vs elbow only
     """
     print(data)
 
@@ -25,9 +25,9 @@ def classify_armrest_height(data):
 
     allowed_margin = resting_elbow_y / 10  # 10% margin
 
-    # ---------------------------
-    # CASE 1: Standing, no chair
-    # ---------------------------
+   
+    # First case : Standing, no chair
+    
     if data.get("isStanding"):
         if "desk_y" not in data:
             return "Insufficient Data"
@@ -39,9 +39,9 @@ def classify_armrest_height(data):
         else:
             return "Optimal"
 
-    # ---------------------------
+   
     # Armrest height calculation
-    # ---------------------------
+   
     if not data.get("isChair") or "armrest_box" not in data:
         return "Insufficient Data"
     armrest_box = data["armrest_box"]
@@ -49,9 +49,9 @@ def classify_armrest_height(data):
     armrest_h = float(armrest_box["h"])
     armrest_avg_y = armrest_top_y + (armrest_h / 2)
 
-    # ---------------------------
-    # CASE 2: Sitting with desk
-    # ---------------------------
+   
+    # Second case : Sitting with desk
+    
     if data.get("isDesk"):
         desk_y = data["desk_y"]
         if armrest_avg_y > resting_elbow_y + allowed_margin or armrest_avg_y > desk_y + allowed_margin:
@@ -61,9 +61,9 @@ def classify_armrest_height(data):
         else:
             return "Optimal"
 
-    # ---------------------------
-    # CASE 3: Sitting without desk
-    # ---------------------------
+   
+    # Third case : Sitting without desk
+   
     else:
         if armrest_avg_y > resting_elbow_y + allowed_margin:
             return "Too High"
