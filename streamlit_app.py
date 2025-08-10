@@ -69,10 +69,9 @@ if uploaded_file:
 
         # Order to display prefixes
         display_order = ["cropped", "candidate_canny", "candidate_mask", "candidates"]
-
+        st.markdown(f"Region of interest processing for above and below elbow")
         # Now display each suffix group in one line with subplots
         for suffix, images_dict in images_by_suffix.items():
-            st.markdown(f"**Images for suffix {suffix}**")
             fig, axes = plt.subplots(1, len(display_order), figsize=(15, 4))
             if len(display_order) == 1:
                 axes = [axes]  # make iterable if only 1 subplot
