@@ -1,5 +1,7 @@
 # Armrest Height Classification App
 
+https://docs.google.com/document/d/1lau08V3qay5ETC-SD0nOiTa20RGRS7px_Nwa9Go0oJM/edit?usp=sharing
+
 This is a **Streamlit-based web application** that analyzes a **side-profile image** of a person working at a desk and classifies whether their **chair armrest height** is:
 
 - **Optimal**
@@ -35,3 +37,7 @@ pip install -r requirements.txt
 ```bash
 streamlit run streamlit_app.py
 ```
+# App Screenshots
+<img width="248" height="773" alt="image" src="https://github.com/user-attachments/assets/a6305b37-f8ea-4eb9-8c2c-57e649ea75b8" />
+<img width="898" height="379" alt="image" src="https://github.com/user-attachments/assets/f7e3dc65-eb47-4726-b97c-3afcf50da2ae" />
+
