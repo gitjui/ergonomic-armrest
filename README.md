@@ -24,7 +24,7 @@ It uses **image processing** and **pose landmark detection** to assess ergonomic
 
 ## 📦 Requirements
 
-Make sure you have Python installed (**>=3.9** recommended).
+Make sure you have Python installed ( 3.10.18 recommended).
 
 Install dependencies from the included `requirements.txt`:
 
