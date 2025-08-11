@@ -1,7 +1,7 @@
 # Armrest Height Classification App
 
-Streamlit app link - https://jui-ergonomic-armrest.streamlit.app/ 
-Documentation and Results - https://docs.google.com/document/d/1lau08V3qay5ETC-SD0nOiTa20RGRS7px_Nwa9Go0oJM/edit?usp=sharing
+- Streamlit app link - https://jui-ergonomic-armrest.streamlit.app/ 
+- Documentation and Results - https://docs.google.com/document/d/1lau08V3qay5ETC-SD0nOiTa20RGRS7px_Nwa9Go0oJM/edit?usp=sharing
 
 
 This is a **Streamlit-based web application** that analyzes a **side-profile image** of a person working at a desk and classifies whether their **chair armrest height** is:
